@@ -9,9 +9,19 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class CustomAdapter(private val phones:ArrayList<Phone>): RecyclerView.Adapter<CustomAdapter.DataHolder>() {
+
+    private lateinit var mListener: onItemClickListener
+    interface onItemClickListener{
+
+        fun onItemClick(position: Int)
+    }
+    fun setOnItemClickListener(listener: onItemClickListener){
+        mListener = listener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataHolder {
             val dataHolder:DataHolder = DataHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.custom_layout, parent,false))
+                .inflate(R.layout.custom_layout, parent,false), mListener)
     return dataHolder
     }
 
@@ -27,9 +37,16 @@ class CustomAdapter(private val phones:ArrayList<Phone>): RecyclerView.Adapter<C
     override fun getItemCount(): Int {
         return phones.size
     }
-    class DataHolder(view:View): RecyclerView.ViewHolder(view){
+    class DataHolder(view:View, listener: onItemClickListener): RecyclerView.ViewHolder(view){
         val img:ImageView = view.findViewById(R.id.imView)
         val name:TextView = view.findViewById(R.id.nameView)
         val brand:TextView = view.findViewById(R.id.brandView)
+
+        init {
+            view.setOnClickListener {
+                listener.onItemClick(adapterPosition)
+            }
+        }
+
     }
 }
